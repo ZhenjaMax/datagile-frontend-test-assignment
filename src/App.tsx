@@ -14,10 +14,14 @@ function App() {
   	const [inputText, setInputText] = React.useState<string>('');
 
 	const filteredTasks: Task[] = tasks.filter((task: Task) => {
-		if (filter === 'all') return true;
-		if (filter === 'completed') return task.isCompleted;
-		if (filter === 'uncompleted') return !task.isCompleted;
-		return true;
+		switch(filter) {
+			case 'completed':
+				return task.isCompleted;
+			case 'uncompleted':
+				return !task.isCompleted;
+			default:
+				return true;
+		}
 	});
 	const sortedTasks: Task[] = filteredTasks.sort((a: Task, b: Task) => {
 		switch(sortBy) {
