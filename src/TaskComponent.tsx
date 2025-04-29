@@ -1,4 +1,4 @@
-import { Button, Checkbox, Typography } from "@mui/material"
+import { Box, Button, Checkbox, Typography } from "@mui/material"
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function TaskComponent(
@@ -7,17 +7,17 @@ export default function TaskComponent(
 		onToggle: (id: number) => void, onDelete: (id: number) => void
 	}
 ) {
-	return <div style={{display: 'flex', padding: "3px"}}>
-		<div style={{display: 'flex', alignItems: 'center', flex: '1 1 auto'}}>
+	return <Box sx={{display: 'flex', padding: "3px"}}>
+		<Box sx={{display: 'flex', alignItems: 'center', flex: '1 1 auto'}}>
 			<Checkbox 
 				checked={isCompleted}
 				onChange={() => onToggle(id)}
 			></Checkbox>
-			<Typography style={{
+			<Typography sx={{
 				margin: '0', fontSize: 16, 
 				textDecoration: isCompleted ? "line-through": "auto"
 			}}>{name}</Typography>
-		</div>
+		</Box>
 		<Button
 			onClick={() => onDelete(id)}
 			sx={{
@@ -30,5 +30,5 @@ export default function TaskComponent(
 				borderRadius: '7px',
 			}
 		}><DeleteIcon sx={{ color: 'grey.600' }} /></Button>
-	</div>
+	</Box>
 }

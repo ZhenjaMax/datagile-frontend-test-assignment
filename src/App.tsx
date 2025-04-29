@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { Button, FormControlLabel, RadioGroup, Radio, FormControl, MenuItem, Select, Typography } from '@mui/material';
+import { Button, FormControlLabel, RadioGroup, Radio, FormControl, MenuItem, Select, Typography, Box } from '@mui/material';
 import { addTask, toggleTask, deleteTask, setFilter, setSortBy, Task } from './tasksSlice';
 import { RootState } from './store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,12 +20,13 @@ function App() {
 		return true;
 	});
 	const sortedTasks: Task[] = filteredTasks.sort((a: Task, b: Task) => {
-		if (sortBy === 'name') {
-			return a.name.localeCompare(b.name);
-		} else if (sortBy === 'status') {
-			return Number(a.isCompleted) - Number(b.isCompleted);
-		} else {
-			return a.id - b.id;
+		switch(sortBy) {
+			case 'name':
+				return a.name.localeCompare(b.name);
+			case 'status':
+				return Number(a.isCompleted) - Number(b.isCompleted);
+			default:
+				return a.id - b.id;
 		}
 	});
 
@@ -37,30 +38,32 @@ function App() {
 	};
 
   	return (<>
-		<div style={{display: 'flex', alignItems: 'center', borderBottom: '2px solid #E9E9E9', margin: "20px 0 0", padding: "0 20px 20px"}}>
-			<Typography style={{color: '#888', paddingRight: '60px', margin: '0', flexShrink: 0, fontSize: 16}}>Новая задача</Typography>
+		<Box sx={{display: 'flex', alignItems: 'center', borderBottom: '2px solid #E9E9E9', margin: "20px 0 0", padding: "0 20px 20px"}}>
+			<Typography sx={{color: '#888', paddingRight: '60px', margin: '0', flexShrink: 0, fontSize: 16}}>Новая задача</Typography>
 			<IsolatedTextField onAddTask={(text) => dispatch(addTask(text))} />
 			<Button
 				disableRipple
 				variant="contained"
 				startIcon={<AddIcon />} 
-				sx={{textTransform: 'none', fontWeight: 500, padding: '7px', marginLeft: "20px", backgroundColor: "#315BFF", flexShrink: 0, 
+				sx={{textTransform: 'none', marginLeft: "20px", padding: "8px 15px", backgroundColor: "#315BFF", flexShrink: 0, height: '100%', boxShadow: "none",
 					'&:hover': {
 						backgroundColor: '#466CFF',
-						transition: '0.1s'
+						transition: '0.1s',
+						boxShadow: "none"
 					},
 					'&:active': {
 						backgroundColor: '#0035A0',
-						transition: '0.1s'
+						transition: '0.1s',
+						boxShadow: "none"
 					}
 				}}
 				onClick={handleAddTask}
 			>Добавить</Button>
-		</div>
-		<div style={{padding: '25px 20px'}}>
-			<Typography style={{fontSize: 22, margin: '0'}}>Список задач</Typography>
-			<div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', border: '2px solid #D7D7D7', borderRadius: '5px', margin: '20px 0'}}>
-				<div style={{padding: '15px', borderRight: '2px solid #D7D7D7', height: '300px', overflowY: 'auto'}}>
+		</Box>
+		<Box sx={{padding: '25px 20px'}}>
+			<Typography sx={{fontSize: 22, margin: '0'}}>Список задач</Typography>
+			<Box sx={{display: 'grid', gridTemplateColumns: '1fr 1fr', border: '2px solid #D7D7D7', borderRadius: '5px', margin: '20px 0'}}>
+				<Box sx={{padding: '15px', borderRight: '2px solid #D7D7D7', height: '300px', overflowY: 'auto'}}>
 					{sortedTasks.map((task: Task) => <TaskComponent
 						key={task.id}
 						id={task.id}
@@ -69,10 +72,10 @@ function App() {
 						onToggle={(id: number) => dispatch(toggleTask(id))}
 						onDelete={(id: number) => dispatch(deleteTask(id))}
 					></TaskComponent>)}
-				</div>
-				<div style={{padding: '15px', height: '300px'}}>
-					<div style={{display: 'grid', gridTemplateColumns: 'auto 1fr', columnGap: "16px", rowGap: "10px", alignSelf: 'start'}}>
-						<Typography style={{color: 'grey', alignSelf: 'center'}}>Статус</Typography>
+				</Box>
+				<Box sx={{padding: '15px', height: '300px'}}>
+					<Box sx={{display: 'grid', gridTemplateColumns: 'auto 1fr', columnGap: "16px", rowGap: "10px", alignSelf: 'start'}}>
+						<Typography sx={{color: 'grey', alignSelf: 'center'}}>Статус</Typography>
 						<FormControl>
 							<RadioGroup
 								aria-labelledby="label-radiio-buttons-group"
@@ -86,7 +89,7 @@ function App() {
 								<FormControlLabel value="completed" control={<Radio />} label="Завершённые" />
 							</RadioGroup>
 						</FormControl>
-						<Typography style={{color: 'grey', alignSelf: 'center'}}>Сортировка</Typography>
+						<Typography sx={{color: 'grey', alignSelf: 'center'}}>Сортировка</Typography>
 						<FormControl fullWidth>
 						<Select
 							labelId="label-select-group"
@@ -98,10 +101,10 @@ function App() {
 							<MenuItem value={"status"}>Статус</MenuItem>
 						</Select>
 						</FormControl>
-					</div>
-				</div>
-			</div>
-		</div>
+					</Box>
+				</Box>
+			</Box>
+		</Box>
 	</>);
 }
 
