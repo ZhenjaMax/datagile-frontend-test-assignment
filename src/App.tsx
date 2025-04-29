@@ -1,71 +1,33 @@
 import React from 'react';
 import './App.css';
 import { Button, FormControlLabel, RadioGroup, Radio, FormControl, MenuItem, Select, Typography } from '@mui/material';
-import { Checkbox } from '@mui/material';
 import { addTask, toggleTask, deleteTask, setFilter, setSortBy, Task } from './tasksSlice';
 import { RootState } from './store';
 import { useDispatch, useSelector } from 'react-redux';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add'
 import IsolatedTextField from './IsolatedTextField';
-
-function TaskComponent(
-	{id, name, isCompleted, onToggle, onDelete}: 
-	{id: number, name: string, isCompleted: boolean, 
-		onToggle: (id: number) => void, onDelete: (id: number) => void
-	}
-) {
-	return <div style={{display: 'flex', padding: "3px"}}>
-		<div style={{display: 'flex', alignItems: 'center', flex: '1 1 auto'}}>
-			<Checkbox 
-				checked={isCompleted}
-				onChange={() => onToggle(id)}
-			></Checkbox>
-			<Typography style={{
-				margin: '0', fontSize: 16, 
-				textDecoration: isCompleted ? "line-through": "auto"
-			}}>{name}</Typography>
-		</div>
-		<Button
-			onClick={() => onDelete(id)}
-			sx={{
-				bgcolor: 'white',
-				boxShadow: '0px 5px 5px rgba(0,0,0,0.1)',
-				minWidth: '24px',
-				width: '42px',
-				minHeight: '42px',
-				padding: '0',
-				borderRadius: '7px',
-			}
-		}><DeleteIcon sx={{ color: 'grey.600' }} /></Button>
-	</div>
-}
+import TaskComponent from './TaskComponent';
 
 function App() {
 	const dispatch = useDispatch();
   	const { tasks, filter, sortBy } = useSelector((state: RootState) => state.tasks);
   	const [inputText, setInputText] = React.useState<string>('');
 
-	  const filteredTasks = React.useMemo(() => {
-		return tasks.filter((task: Task) => {
-			if (filter === 'all') return true;
-			if (filter === 'completed') return task.isCompleted;
-			if (filter === 'uncompleted') return !task.isCompleted;
-			return true;
-		});
-	}, [tasks, filter]);
-	
-	const sortedTasks = React.useMemo(() => {
-		return [...filteredTasks].sort((a: Task, b: Task) => {
-			if (sortBy === 'name') {
-				return a.name.localeCompare(b.name);
-			} else if (sortBy === 'status') {
-				return Number(a.isCompleted) - Number(b.isCompleted);
-			} else {
-				return a.id - b.id;
-			}
-		});
-	}, [filteredTasks, sortBy]);
+	const filteredTasks: Task[] = tasks.filter((task: Task) => {
+		if (filter === 'all') return true;
+		if (filter === 'completed') return task.isCompleted;
+		if (filter === 'uncompleted') return !task.isCompleted;
+		return true;
+	});
+	const sortedTasks: Task[] = filteredTasks.sort((a: Task, b: Task) => {
+		if (sortBy === 'name') {
+			return a.name.localeCompare(b.name);
+		} else if (sortBy === 'status') {
+			return Number(a.isCompleted) - Number(b.isCompleted);
+		} else {
+			return a.id - b.id;
+		}
+	});
 
 	const handleAddTask = () => {
 		if(inputText.trim() === '')
