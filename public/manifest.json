@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "TODO Задачи",
+  "name": "TODO Задачи — создавайте и управляйте задачами",
   "icons": [
     {
       "src": "favicon.ico",
