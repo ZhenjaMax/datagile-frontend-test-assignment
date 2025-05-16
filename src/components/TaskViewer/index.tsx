@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { Task } from '../../types';
-import TaskItem from '../TaskItem';
+import TaskItem from './TaskItem';
 import './index.css';
 
 interface TaskViewerProps {
