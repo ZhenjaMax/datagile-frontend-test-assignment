@@ -1,17 +1,16 @@
-import React from 'react';
-import './App.css';
-import { Button, FormControlLabel, RadioGroup, Radio, FormControl, MenuItem, Select, Typography, Box } from '@mui/material';
-import { addTask, toggleTask, deleteTask, setFilter, setSortBy, Task } from './tasksSlice';
-import { RootState } from './store';
+import { Typography, Box } from '@mui/material';
+import { addTask, toggleTask, deleteTask, setFilter, setSortBy } from './store/tasksSlice';
+import { RootState } from './store/store';
 import { useDispatch, useSelector } from 'react-redux';
-import AddIcon from '@mui/icons-material/Add'
-import IsolatedTextField from './IsolatedTextField';
-import TaskComponent from './TaskComponent';
+import TaskInput from './components/TaskInput';
+import TaskViewer from './components/TaskViewer';
+import TaskManager from './components/TaskManager';
+import { Task, TaskFilter, TaskSortBy } from './types';
+import './App.css';
 
 function App() {
 	const dispatch = useDispatch();
   	const { tasks, filter, sortBy } = useSelector((state: RootState) => state.tasks);
-  	const [inputText, setInputText] = React.useState<string>('');
 
 	const filteredTasks: Task[] = tasks.filter((task: Task) => {
 		switch(filter) {
@@ -23,6 +22,7 @@ function App() {
 				return true;
 		}
 	});
+
 	const sortedTasks: Task[] = filteredTasks.sort((a: Task, b: Task) => {
 		switch(sortBy) {
 			case 'name':
@@ -34,82 +34,28 @@ function App() {
 		}
 	});
 
-	const handleAddTask = () => {
-		if(inputText.trim() === '')
-			return;
-		dispatch(addTask(inputText));
-		setInputText('');
-	};
-
-  	return (<>
-		<Box sx={{display: 'flex', alignItems: 'center', borderBottom: '2px solid #E9E9E9', margin: "20px 0 0", padding: "0 20px 20px"}}>
-			<Typography sx={{color: '#888', paddingRight: '60px', margin: '0', flexShrink: 0, fontSize: 16}}>Новая задача</Typography>
-			<IsolatedTextField onAddTask={(text) => dispatch(addTask(text))} />
-			<Button
-				disableRipple
-				variant="contained"
-				startIcon={<AddIcon />} 
-				sx={{textTransform: 'none', marginLeft: "20px", padding: "8px 15px", backgroundColor: "#315BFF", flexShrink: 0, height: '100%', boxShadow: "none",
-					'&:hover': {
-						backgroundColor: '#466CFF',
-						transition: '0.1s',
-						boxShadow: "none"
-					},
-					'&:active': {
-						backgroundColor: '#0035A0',
-						transition: '0.1s',
-						boxShadow: "none"
-					}
-				}}
-				onClick={handleAddTask}
-			>Добавить</Button>
+  	return <>
+		<Box className="app-input-outer-box">
+			<Typography className="app-input-label">Новая задача</Typography>
+			<TaskInput onAddTask={text => dispatch(addTask(text))}></TaskInput>
 		</Box>
-		<Box sx={{padding: '25px 20px'}}>
-			<Typography sx={{fontSize: 22, margin: '0'}}>Список задач</Typography>
-			<Box sx={{display: 'grid', gridTemplateColumns: '1fr 1fr', border: '2px solid #D7D7D7', borderRadius: '5px', margin: '20px 0'}}>
-				<Box sx={{padding: '15px', borderRight: '2px solid #D7D7D7', height: '300px', overflowY: 'auto'}}>
-					{sortedTasks.map((task: Task) => <TaskComponent
-						key={task.id}
-						id={task.id}
-						name={task.name}
-						isCompleted={task.isCompleted}
-						onToggle={(id: number) => dispatch(toggleTask(id))}
-						onDelete={(id: number) => dispatch(deleteTask(id))}
-					></TaskComponent>)}
-				</Box>
-				<Box sx={{padding: '15px', height: '300px'}}>
-					<Box sx={{display: 'grid', gridTemplateColumns: 'auto 1fr', columnGap: "16px", rowGap: "10px", alignSelf: 'start'}}>
-						<Typography sx={{color: 'grey', alignSelf: 'center'}}>Статус</Typography>
-						<FormControl>
-							<RadioGroup
-								aria-labelledby="label-radiio-buttons-group"
-								name="radiio-buttons-group"
-								value={filter}
-								row
-								onChange={(e) => dispatch(setFilter(e.target.value as 'all' | 'completed' | 'uncompleted'))}
-							>
-								<FormControlLabel value="all" control={<Radio />} label="Все" />
-								<FormControlLabel value="uncompleted" control={<Radio />} label="Активные" />
-								<FormControlLabel value="completed" control={<Radio />} label="Завершённые" />
-							</RadioGroup>
-						</FormControl>
-						<Typography sx={{color: 'grey', alignSelf: 'center'}}>Сортировка</Typography>
-						<FormControl fullWidth>
-						<Select
-							labelId="label-select-group"
-							id="select-group"
-							value={sortBy}
-							onChange={(e) => dispatch(setSortBy(e.target.value as 'name' | 'status'))}
-						>
-							<MenuItem value={"name"}>Наименование</MenuItem>
-							<MenuItem value={"status"}>Статус</MenuItem>
-						</Select>
-						</FormControl>
-					</Box>
-				</Box>
+		<Box className="app-tasks-outer-box">
+			<Typography className='app-tasks-header'>Список задач</Typography>
+			<Box className="app-tasks-inner-box">
+				<TaskViewer
+					tasks={sortedTasks}
+					onToggle={(id: number) => dispatch(toggleTask(id))}
+					onDelete={(id: number) => dispatch(deleteTask(id))}
+				></TaskViewer>
+				<TaskManager 
+					filter={filter}
+					sortBy={sortBy}
+					onFilterChange={(value: TaskFilter) => dispatch(setFilter(value))}
+					onSortChange={(value: TaskSortBy) => dispatch(setSortBy(value))}
+				></TaskManager>
 			</Box>
 		</Box>
-	</>);
+	</>;
 }
 
 export default App;
