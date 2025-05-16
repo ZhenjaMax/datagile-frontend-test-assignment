@@ -1,27 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface Task {
-    id: number;
-    name: string;
-    isCompleted: boolean;
-}
-
-interface TasksState {
-    tasks: Task[];
-    filter: 'all' | 'completed' | 'uncompleted';
-    sortBy: 'name' | 'status';
-}
-
-const initialState: TasksState = {
-    tasks: [
-        {id: 1, name: "Проснуться", isCompleted: true},
-        {id: 2, name: "Улыбнуться", isCompleted: true},
-        {id: 3, name: "Позавтракать", isCompleted: false},
-        {id: 4, name: "Съездить в университет", isCompleted: false}
-    ],
-    filter: 'all',
-    sortBy: 'name'
-};
+import { Task, TaskFilter, TaskSortBy } from '../types';
+import initialState from './initialState';
         
 const tasksSlice = createSlice({
     name: 'tasks',
@@ -44,15 +23,14 @@ const tasksSlice = createSlice({
         deleteTask: (state, action: PayloadAction<number>): void => {
             state.tasks = state.tasks.filter(task => task.id !== action.payload);
         },
-        setFilter: (state, action: PayloadAction<'all' | 'completed' | 'uncompleted'>): void => {
+        setFilter: (state, action: PayloadAction<TaskFilter>): void => {
             state.filter = action.payload;
         },
-        setSortBy: (state, action: PayloadAction<'name' | 'status'>): void => {
+        setSortBy: (state, action: PayloadAction<TaskSortBy>): void => {
             state.sortBy = action.payload;
         }
     },
 });
 
 export const { addTask, toggleTask, deleteTask, setFilter, setSortBy } = tasksSlice.actions;
-export type { Task };
 export default tasksSlice.reducer;

@@ -1,0 +1,17 @@
+.task-manager-outer {
+    padding: 15px;
+    height: 300px;
+}
+
+.task-manager-inner-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 16px;
+    row-gap: 10px;
+    align-self: start;
+}
+
+.task-manager-label {
+    color: grey;
+    align-self: center;
+}
